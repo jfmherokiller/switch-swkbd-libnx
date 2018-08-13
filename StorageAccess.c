@@ -1,11 +1,10 @@
+#include <stdio.h>
 #include "swkbd.h"
 
 
 Result StorageWrite(Handle srv, u64 offset, const uint8_t *data, size_t size) {
     IpcCommand c;
     ipcInitialize(&c);
-    size_t QueriedSize;
-    ipcQueryPointerBufferSize(srv,&QueriedSize);
     struct {
         u64 magic;
         u64 cmd_id;
@@ -18,7 +17,7 @@ Result StorageWrite(Handle srv, u64 offset, const uint8_t *data, size_t size) {
     raw->cmd_id = 10;
     raw->offset = offset;
     //ipcAddSendBuffer(&c, (void *) data, size, 0x21);
-    ipcAddSendSmart(&c,QueriedSize,(void *) data,size,0);
+    ipcAddSendSmart(&c,0,(void *) data,size,0);
     Result rc = ipcDispatch(srv);
 
     if (R_SUCCEEDED(rc)) {
